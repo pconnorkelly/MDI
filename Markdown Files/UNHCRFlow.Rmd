@@ -1,10 +1,3 @@
----
-title: "Flow Data from UNHCR"
-author: "Connor Kelly"
-date: "12/02/2020"
-output: html_document
----
-
 ```{r message=FALSE}
 # UNHCR Flow Data
 # Author: Connor Kelly
@@ -19,8 +12,6 @@ startyear <- "1962" # specifies which year we want to start our observations (MI
 n <- 10 # specifies # of top destinations to display
 
 ```
-
-## Setup
 
 I am analyzing data from UNHCR to understand the flows of asylum seekers and refugees from country to country.
 
@@ -63,129 +54,155 @@ origin <- data.frame(t(flow_sum)) # Transpose dataframe for ease of use
 
 Next, I generate plots of the number of asylum seekers and refugees fleeing a given country over time. The R package "plotly" generates interactive plots which make it easier to pinpoint specific observations over time. You can hover your cursor over the graph to see the precise number of refugees and asylum seekers in a given year. You can also zoom in or highlight specific periods of interest.
 
+### Afghanistan
 ```{r}
-# Afghanistan
 afg_p <- ggplot(origin, aes(year, Afghanistan)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Afghanistan") +
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(afg_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Bangladesh
+### Bangladesh
+```{r}
 bgd_p <- ggplot(origin, aes(year, Bangladesh)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Afghanistan") +
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(bgd_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x") 
+```
 
-# Burundi
+### Burundi
+```{r}
 bdi_p <- ggplot(origin, aes(year, Burundi)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Burundi") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(bdi_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Central African Republic
+### Central African Republic
+```{r}
 caf_p <- ggplot(origin, aes(year, `Central African Rep.`)) + geom_line() + 
   ggtitle("Refugees and Aylum Seekers from Central African Republic") + ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(caf_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Chad
+### Chad
+```{r}
 tcd_p <- ggplot(origin, aes(year, Chad)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Chad") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(tcd_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
-
-# Ethiopia
+```
+### Ethiopia
+```{r}
 eth_p <- ggplot(origin, aes(year, Ethiopia)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Ethiopia") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(eth_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Guatemala
+### Guatemala
+```{r}
 gtm_p <- ggplot(origin, aes(year, Guatemala)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Guatemala") +
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(gtm_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Iraq
+### Iraq
+```{r}
 irq_p <- ggplot(origin, aes(year, Iraq)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Iraq") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(irq_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Libya
+### Libya
+```{r}
 lby_p <- ggplot(origin, aes(year, Libya)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Libya") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(lby_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Mali
+### Mali
+```{r}
 mli_p <- ggplot(origin, aes(year, Mali)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Mali") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(mli_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Myanmar
+### Myanmar
+```{r}
 mmr_p <- ggplot(origin, aes(year, Myanmar)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Myanmar") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(mmr_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Nigeria
+### Nigeria
+```{r}
 nga_p <- ggplot(origin, aes(year, Nigeria)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Nigeria") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(nga_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Somalia
+### Somalia
+```{r}
 som_p <- ggplot(origin, aes(year, Somalia)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Somalia") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(som_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# South Sudan
+### South Sudan
+```{r}
 ssd_p <- ggplot(origin, aes(year, `South Sudan`)) + geom_line() + ggtitle("Refugees and Aylum Seekers from South Sudan") +
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(ssd_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Sudan
+### Sudan
+```{r}
 sdn_p <- ggplot(origin, aes(year, Sudan)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Sudan") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(sdn_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Syria
+### Syria
+```{r}
 syr_p <- ggplot(origin, aes(year, `Syrian Arab Rep.`)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Syria") +
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(syr_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Venezuela
+### Venezuela
+```{r}
 ven_p <- ggplot(origin, aes(year, `Venezuela (Bolivarian Republic of)`)) + geom_line() + 
   ggtitle("Refugees and Aylum Seekers from Venezuela") + ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(ven_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+```
 
-# Yemen
+### Yemen
+```{r}
 yem_p <- ggplot(origin, aes(year, Yemen)) + geom_line() + ggtitle("Refugees and Aylum Seekers from Yemen") + 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(yem_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
-
 ```
 
 ## Destinations of asylum seekers
 
 Next, I want to see where exactly asylum seekers from these priority countries are going. For each country of interest, I disaggregate my data based on country of asylum (i.e. to where have asylum seekers fled). I then plot the number of asylum seekers in each country of asylum over time. This makes for a busy plot, but the Plotly package makes this more managable. If you wish to toggle whether a certain country is shown on the plot, you can click on the country name in the legend. If you wish to isolate the graph to show only one country, double click on that country in the legend.
 
+### Afghanistan
 ```{r}
-############
-# Flow Destination (Country of asylum)
-############
-
-############
-# Afghanistan: Destinations
-############
 afg <- flow %>% 
   filter(Origin == "Afghanistan") %>%
   group_by(`Country of asylum`) %>%
@@ -209,10 +226,10 @@ afg$`Country of asylum` <- factor(afg$`Country of asylum`, levels = top) # Sort 
 afg_p <- ggplot(afg, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Afghan Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(afg_p, dynamicTicks = TRUE)
+```
 
-############
-# Bangladesh: Destinations
-############
+### Bangladesh
+```{r}
 bgd <- flow %>% 
   filter(Origin == "Bangladesh") %>%
   group_by(`Country of asylum`) %>%
@@ -236,10 +253,10 @@ bgd$`Country of asylum` <- factor(bgd$`Country of asylum`, levels = top) # Sort 
 bgd_p <- ggplot(bgd, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Bangladeshi Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(bgd_p, dynamicTicks = TRUE)
+```
 
-############
-# Burundi: Destinations
-############
+### Burundi
+```{r}
 bdi <- flow %>% 
   filter(Origin == "Burundi") %>%
   group_by(`Country of asylum`) %>%
@@ -263,10 +280,10 @@ bdi$`Country of asylum` <- factor(bdi$`Country of asylum`, levels = top) # Sort 
 bdi_p <- ggplot(bdi, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Burundian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(bdi_p, dynamicTicks = TRUE)
+```
 
-############
-# Central African Republic: Destinations
-############
+### Central African Republic
+```{r}
 caf <- flow %>% 
   filter(Origin == "Central African Rep.") %>%
   group_by(`Country of asylum`) %>%
@@ -290,10 +307,10 @@ caf$`Country of asylum` <- factor(caf$`Country of asylum`, levels = top) # Sort 
 caf_p <- ggplot(caf, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Central African Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(caf_p, dynamicTicks = TRUE)
+```
 
-############
-# Chad: Destinations
-############
+### Chad
+```{r}
 tcd <- flow %>% 
   filter(Origin == "Chad") %>%
   group_by(`Country of asylum`) %>%
@@ -317,10 +334,10 @@ tcd$`Country of asylum` <- factor(tcd$`Country of asylum`, levels = top) # Sort 
 tcd_p <- ggplot(tcd, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Chadian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(tcd_p, dynamicTicks = TRUE)
+```
 
-############
-# Ethiopia: Destinations
-############
+### Ethiopia
+```{r}
 eth <- flow %>% 
   filter(Origin == "Ethiopia") %>%
   group_by(`Country of asylum`) %>%
@@ -344,10 +361,11 @@ eth$`Country of asylum` <- factor(eth$`Country of asylum`, levels = top) # Sort 
 eth_p <- ggplot(eth, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Ethiopian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(eth_p, dynamicTicks = TRUE)
+```
 
-############
-# Guatemala: Destinations
-############
+
+### Guatemala
+```{r}
 gtm <- flow %>% 
   filter(Origin == "Guatemala") %>%
   group_by(`Country of asylum`) %>%
@@ -371,10 +389,10 @@ gtm$`Country of asylum` <- factor(gtm$`Country of asylum`, levels = top) # Sort 
 gtm_p <- ggplot(gtm, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Guatemalan Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(gtm_p, dynamicTicks = TRUE)
+```
 
-############
-# Iraq: Destinations
-############
+### Iraq
+```{r}
 irq <- flow %>% 
   filter(Origin == "Iraq") %>%
   group_by(`Country of asylum`) %>%
@@ -398,10 +416,10 @@ irq$`Country of asylum` <- factor(irq$`Country of asylum`, levels = top) # Sort 
 irq_p <- ggplot(irq, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Iraqi Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(irq_p, dynamicTicks = TRUE)
+```
 
-############
-# Libya: Destinations
-############
+### Libya
+```{r}
 lby <- flow %>% 
   filter(Origin == "Libya") %>%
   group_by(`Country of asylum`) %>%
@@ -425,10 +443,10 @@ lby$`Country of asylum` <- factor(lby$`Country of asylum`, levels = top) # Sort 
 lby_p <- ggplot(lby, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Libyan Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(lby_p, dynamicTicks = TRUE)
+```
 
-############
-# Mali: Destinations
-############
+### Mali
+```{r}
 mli <- flow %>% 
   filter(Origin == "Mali") %>%
   group_by(`Country of asylum`) %>%
@@ -452,10 +470,10 @@ mli$`Country of asylum` <- factor(mli$`Country of asylum`, levels = top) # Sort 
 mli_p <- ggplot(mli, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Malian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(mli_p, dynamicTicks = TRUE)
+```
 
-############
-# Myanmar: Destinations
-############
+### Myanmar
+```{r}
 mmr <- flow %>% 
   filter(Origin == "Myanmar") %>%
   group_by(`Country of asylum`) %>%
@@ -479,10 +497,10 @@ mmr$`Country of asylum` <- factor(mmr$`Country of asylum`, levels = top) # Sort 
 mmr_p <- ggplot(mmr, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Burmese Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(mmr_p, dynamicTicks = TRUE)
+```
 
-############
-# Nigeria: Destinations
-############
+### Nigeria
+```{r}
 nga <- flow %>% 
   filter(Origin == "Nigeria") %>%
   group_by(`Country of asylum`) %>%
@@ -506,10 +524,10 @@ nga$`Country of asylum` <- factor(nga$`Country of asylum`, levels = top) # Sort 
 nga_p <- ggplot(nga, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Nigerian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(nga_p, dynamicTicks = TRUE)
+```
 
-############
-# Somalia: Destinations
-############
+### Somalia
+```{r}
 som <- flow %>% 
   filter(Origin == "Somalia") %>%
   group_by(`Country of asylum`) %>%
@@ -533,10 +551,10 @@ som$`Country of asylum` <- factor(som$`Country of asylum`, levels = top) # Sort 
 som_p <- ggplot(som, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Somali Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(som_p, dynamicTicks = TRUE)
+```
 
-############
-# South Sudan: Destinations
-############
+### South Sudan
+```{r}
 ssd <- flow %>% 
   filter(Origin == "South Sudan") %>%
   group_by(`Country of asylum`) %>%
@@ -560,10 +578,10 @@ ssd$`Country of asylum` <- factor(ssd$`Country of asylum`, levels = top) # Sort 
 ssd_p <- ggplot(ssd, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of South Sudanese Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(ssd_p, dynamicTicks = TRUE)
+```
 
-############
-# Sudan: Destinations
-############
+### Sudan
+```{r}
 sdn <- flow %>% 
   filter(Origin == "Sudan") %>%
   group_by(`Country of asylum`) %>%
@@ -587,10 +605,10 @@ sdn$`Country of asylum` <- factor(sdn$`Country of asylum`, levels = top) # Sort 
 sdn_p <- ggplot(sdn, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Sudanese Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(sdn_p, dynamicTicks = TRUE)
+```
 
-############
-# Syria: Destinations
-############
+### Syria
+```{r}
 syr <- flow %>% 
   filter(Origin == "Syrian Arab Rep.") %>%
   group_by(`Country of asylum`) %>%
@@ -614,10 +632,10 @@ syr$`Country of asylum` <- factor(syr$`Country of asylum`, levels = top) # Sort 
 syr_p <- ggplot(syr, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Syrian Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(syr_p, dynamicTicks = TRUE)
+```
 
-############
-# Venezuela: Destinations
-############
+### Venezuela
+```{r}
 ven <- flow %>% 
   filter(Origin == "Venezuela (Bolivarian Republic of)") %>%
   group_by(`Country of asylum`) %>%
@@ -641,10 +659,10 @@ ven$`Country of asylum` <- factor(ven$`Country of asylum`, levels = top) # Sort 
 ven_p <- ggplot(ven, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Venezuelan Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(ven_p, dynamicTicks = TRUE)
+```
 
-############
-# Yemen: Destinations
-############
+### Yemen
+```{r}
 yem <- flow %>% 
   filter(Origin == "Yemen") %>%
   group_by(`Country of asylum`) %>%
@@ -668,6 +686,5 @@ yem$`Country of asylum` <- factor(yem$`Country of asylum`, levels = top) # Sort 
 yem_p <- ggplot(yem, aes(x=year, y=asylumseekers, color=`Country of asylum`)) + geom_line() + 
   ggtitle("Top Destinations of Yemeni Refugees and Asylum Seeekers") + xlab("Year") + ylab("Refugees and Asylum Seekers")
 ggplotly(yem_p, dynamicTicks = TRUE)
-
 
 ```
