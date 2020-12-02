@@ -4,9 +4,6 @@
 
 library(tidyverse)
 library(plotly)
-library(RColorBrewer)
-
-display.brewer.all(colorblindFriendly = TRUE)
 
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
 
@@ -36,8 +33,22 @@ afg$agesex <- factor(afg$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 afg_p <- ggplot(afg, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Afghanistan") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Afghanistan") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(afg_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Bangladesh
+bgd <- agesex %>% filter(`Country / territory of asylum/residence`=="Bangladesh")
+bgd <- pivot_longer(bgd,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+bgd$agesex <- factor(bgd$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+bgd_p <- ggplot(bgd, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Bangladesh") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(bgd_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Burundi
@@ -50,9 +61,24 @@ bdi$agesex <- factor(bdi$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 bdi_p <- ggplot(bdi, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Burundi") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Burundi") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(bdi_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+
+# Central African Republic
+caf <- agesex %>% filter(`Country / territory of asylum/residence`=="Central African Rep.")
+caf <- pivot_longer(caf,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+caf$agesex <- factor(caf$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+caf_p <- ggplot(bdi, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Central African Republic") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(caf_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
 
 # Chad
 tcd <- agesex %>% filter(`Country / territory of asylum/residence`=="Chad")
@@ -64,8 +90,36 @@ tcd$agesex <- factor(tcd$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 tcd_p <- ggplot(tcd, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Chad") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Chad") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(tcd_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Ethiopia
+eth <- agesex %>% filter(`Country / territory of asylum/residence`=="Ethiopia")
+eth <- pivot_longer(eth,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+eth$agesex <- factor(eth$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+eth_p <- ggplot(eth, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Ethiopia") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(eth_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Guatemala
+gtm <- agesex %>% filter(`Country / territory of asylum/residence`=="Guatemala")
+gtm <- pivot_longer(gtm,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+gtm$agesex <- factor(gtm$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+gtm_p <- ggplot(gtm, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Guatemala") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(gtm_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Iraq
@@ -78,22 +132,8 @@ irq$agesex <- factor(irq$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 irq_p <- ggplot(irq, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Iraq") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Iraq") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(irq_p, dynamicTicks = TRUE) %>%
-  layout(hovermode = "x")
-
-# Syria
-syr <- agesex %>% filter(`Country / territory of asylum/residence`=="Syrian Arab Rep.")
-syr <- pivot_longer(syr,
-                    cols = c(3:12),
-                    names_to = "agesex",
-                    values_to = "refugees")
-syr$agesex <- factor(syr$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
-                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
-
-syr_p <- ggplot(syr, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Syria") + ylab("Refugees") + theme(legend.title = element_blank())
-ggplotly(syr_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Libya
@@ -106,8 +146,64 @@ lby$agesex <- factor(lby$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 lby_p <- ggplot(lby, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Lybia") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Lybia") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(lby_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Mali
+mli <- agesex %>% filter(`Country / territory of asylum/residence`=="Mali")
+mli <- pivot_longer(mli,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+mli$agesex <- factor(mli$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+mli_p <- ggplot(mli, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Mali") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(mli_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Myanmar
+mmr <- agesex %>% filter(`Country / territory of asylum/residence`=="Myanmar")
+mmr <- pivot_longer(mmr,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+mmr$agesex <- factor(mmr$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+mmr_p <- ggplot(mmr, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Myanmar") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(mmr_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Nigeria
+nga <- agesex %>% filter(`Country / territory of asylum/residence`=="Nigeria")
+nga <- pivot_longer(nga,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+nga$agesex <- factor(nga$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+nga_p <- ggplot(nga, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Nigeria") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(nga_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Syria
+syr <- agesex %>% filter(`Country / territory of asylum/residence`=="Syrian Arab Rep.")
+syr <- pivot_longer(syr,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+syr$agesex <- factor(syr$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+syr_p <- ggplot(syr, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Syria") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(syr_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Sudan
@@ -120,7 +216,7 @@ sdn$agesex <- factor(sdn$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 sdn_p <- ggplot(sdn, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Sudan") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Sudan") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(sdn_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
@@ -134,36 +230,8 @@ ssd$agesex <- factor(ssd$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 ssd_p <- ggplot(ssd, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in South Sudan") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in South Sudan") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(ssd_p, dynamicTicks = TRUE) %>%
-  layout(hovermode = "x")
-
-# Mali
-mli <- agesex %>% filter(`Country / territory of asylum/residence`=="Mali")
-mli <- pivot_longer(mli,
-                    cols = c(3:12),
-                    names_to = "agesex",
-                    values_to = "refugees")
-mli$agesex <- factor(mli$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
-                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
-
-mli_p <- ggplot(mli, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Mali") + ylab("Refugees") + theme(legend.title = element_blank())
-ggplotly(mli_p, dynamicTicks = TRUE) %>%
-  layout(hovermode = "x")
-
-# Nigeria
-nga <- agesex %>% filter(`Country / territory of asylum/residence`=="Nigeria")
-nga <- pivot_longer(nga,
-                    cols = c(3:12),
-                    names_to = "agesex",
-                    values_to = "refugees")
-nga$agesex <- factor(nga$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
-                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
-
-nga_p <- ggplot(nga, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Nigeria") + ylab("Refugees") + theme(legend.title = element_blank())
-ggplotly(nga_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Somalia
@@ -176,22 +244,8 @@ som$agesex <- factor(som$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 som_p <- ggplot(som, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Somalia") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Somalia") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(som_p, dynamicTicks = TRUE) %>%
-  layout(hovermode = "x")
-
-# Guatemala
-gtm <- agesex %>% filter(`Country / territory of asylum/residence`=="Guatemala")
-gtm <- pivot_longer(gtm,
-                    cols = c(3:12),
-                    names_to = "agesex",
-                    values_to = "refugees")
-gtm$agesex <- factor(gtm$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
-                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
-
-gtm_p <- ggplot(gtm, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Guatemala") + ylab("Refugees") + theme(legend.title = element_blank())
-ggplotly(gtm_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
 
 # Venezuela
@@ -204,6 +258,20 @@ ven$agesex <- factor(ven$agesex, levels = c("Female 0-4", "Female 5-17", "Female
                                             "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
 
 ven_p <- ggplot(ven, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
-  ggtitle("Age and Sex of Refugees in Venezuela") + ylab("Refugees") + theme(legend.title = element_blank())
+  ggtitle("Age and Sex of Displaced in Venezuela") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
 ggplotly(ven_p, dynamicTicks = TRUE) %>%
+  layout(hovermode = "x")
+
+# Yemen
+yem <- agesex %>% filter(`Country / territory of asylum/residence`=="Yemen")
+yem <- pivot_longer(yem,
+                    cols = c(3:12),
+                    names_to = "agesex",
+                    values_to = "refugees")
+yem$agesex <- factor(yem$agesex, levels = c("Female 0-4", "Female 5-17", "Female 18-59", "Female 60+", "F: Unknown",
+                                            "Male 0-4", "Male 5-17", "Male 18-59", "Male 60+", "M: Unknown"))
+
+yem_p <- ggplot(yem, aes(x=Year, y=refugees, fill=agesex)) + geom_area() + scale_fill_manual(values = colors) +
+  ggtitle("Age and Sex of Displaced in Yemen") + ylab("Refugees and Asylum Seekers") + theme(legend.title = element_blank())
+ggplotly(yem_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
