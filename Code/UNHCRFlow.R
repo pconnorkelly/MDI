@@ -7,7 +7,7 @@ library(tidyverse)
 library(plotly)
 
 # Set Parameters
-startyear <- "1962" # specifies which year we want to start our observations (MIN: 1962, MAX: 2018)
+startyear <- "2000" # specifies which year we want to start our observations (MIN: 1962, MAX: 2018)
 n <- 10 # specifies # of top destinations to display
 # These parameters can be changed as needed
 
