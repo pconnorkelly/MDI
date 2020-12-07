@@ -2,6 +2,7 @@
 # Author: Connor Kelly
 # Date: Dec 2, 2020
 
+# Packages
 library(readxl)
 library(tidyverse)
 library(plotly)
@@ -155,6 +156,7 @@ yem_p <- ggplot(origin, aes(year, Yemen)) + geom_line() + ggtitle("Refugees and 
   ylab("Refugees and Asylum Seekers") + xlab("Year")
 ggplotly(yem_p, dynamicTicks = TRUE) %>%
   layout(hovermode = "x")
+
 ############
 # Flow Destination (Country of asylum)
 ############
