@@ -1,0 +1,13 @@
+name: UNHCRFlow
+title: UNHCRFlow
+username:
+account: pconnorkelly
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3368525
+bundleId: 3956965
+url: https://pconnorkelly.shinyapps.io/UNHCRFlow/
+when: 1607374806.99814
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: index.html|readme.md|Code/Flow_to_shiny.R|Code/UNHCRDemographics.R|Code/UNHCRFlow.R|Data/new_ref_arrival_new_asy_app_1962_2019.xlsx|Data/priority_flow.csv|Data/unhcr_demographics_children.csv|Data/unhcr_popstats_export_demographics_all_data.csv|Markdown Files
