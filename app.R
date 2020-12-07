@@ -1,62 +1,76 @@
+# Connor Kelly
+# December 7, 2020
+
 # Load packages
 library(shiny)
 library(shinythemes)
 library(dplyr)
 library(readr)
 library(ggplot2)
-library(lubridate)
+library(plotly)
 
 # Set directory and load data
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
-priority_flow <- read_csv("Data/priority_flow.csv")
+priority_flow_long <- read_csv("Data/priority_flow_long.csv")
 
-years <- colnames(priority_flow)[4:61]
   
 # Define UI
 ui <- fluidPage(theme = shinytheme("lumen"),
                 titlePanel("Flows from Country of Origin"),
-                sidebarLayout(
-                  sidebarPanel(
-                    # Select country to plot
-                    selectInput(inputId = "country", label = strong("Country of origin"),
-                                choices = unique(priority_flow$Origin),
-                                selected = "Afghanistan"),
-                    
-                    # Select number of top destinations to display
-                    numericInput(inputId = "n", label = strong("Number of destinations"), value = 5, min = 1, max = 20, step = 1),
-                    
-                    # Select date range to be plotted
-                    selectInput(inputId = "date", strong("Start year"), choices = years, selected = "1962")
-                  ),
+                
+                # Output
+                plotlyOutput(outputId = "lineplot"),
+                
+                # Inputs
+                fluidRow(
+                  # Select country to plot
+                  selectInput(inputId = "country", label = strong("Country of origin"),
+                              choices = unique(priority_flow_long$Origin),
+                              selected = "Afghanistan"),
                   
-                  # Output: Description, lineplot, and reference
-                  mainPanel(
-                    plotOutput(outputId = "lineplot", height = "300px"),
-    
-                  )
+                  # Select number of top destinations to display
+                  numericInput(inputId = "n", label = strong("Number of destinations"), value = 5, min = 1, max = 20, step = 1),
+                  
+                  # Select date range to be plotted
+                  numericInput(inputId = "date", strong("Start year"), value = 1962, min = 1962, max = 2019, step=1)
+                  ),
                 )
-)
+
 
 # Define server function
 server <- function(input, output) {
   
   # Subset data
   selected_country <- reactive({
-    priority_flow %>%
-      filter(Origin == input$country) %>%
-      pivot_longer(col = c(input$date:60),
-                   names_to = "year",
-                   values_to = "refugees") %>%
-      group_by(`Country of asylum`) %>%
-      summarize(total = sum(refugees)) %>%
-      arrange(desc(total)) %>%
-      head(`Country of asylum`, n=input$n)
+    priority_flow_long %>%
+    filter(Origin == input$country, year >= input$date) %>%
+    group_by(`Country of asylum`) %>%
+    mutate(total = sum(refugees)) %>%
+    arrange(desc(total))
     })
   
+  # Identify top destinations
+  top <- reactive({
+    priority_flow_long %>%
+    filter(Origin == input$country, year >= input$date) %>%
+    group_by(`Country of asylum`) %>%
+    summarize(total = sum(refugees)) %>%
+    arrange(desc(total)) %>%
+    head(`Country of asylum`, n=input$n) %>%
+    pull(`Country of asylum`)
+  })
+
   
   # Create plot
-  output$lineplot <- renderPlot({
-  ggplot(selected_country(), aes(x=year, y=refugees, color=`Country of asylum`)) + geom_line()  
+  output$lineplot <- renderPlotly({
+  print(
+    ggplotly(
+      ggplot(subset(selected_country(), `Country of asylum` %in% top()), aes(x=year, y=refugees, color=`Country of asylum`)) +
+        geom_line() + xlab("Year") + ylab("Refugees and Asylum Seekers") + scale_y_continuous(labels = scales::comma) +
+        ggtitle("Destinations of Asylum Seekers and Refugees") + scale_color_discrete(limits=top())
+    )
+  )
+  
   })
 }
 
