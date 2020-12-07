@@ -8,9 +8,10 @@ library(dplyr)
 library(readr)
 library(ggplot2)
 library(plotly)
+library(rsconnect)
 
 # Set directory and load data
-setwd("C:/Users/Connor/Documents/GitHub/MDI")
+# setwd("C:/Users/Connor/Documents/GitHub/MDI")
 priority_flow_long <- read_csv("Data/priority_flow_long.csv")
 
   
@@ -76,3 +77,6 @@ server <- function(input, output) {
 
 # Create Shiny object
 shinyApp(ui = ui, server = server)
+
+# To download and run app from GitHub through R:
+# runGitHub("MDI", "pconnorkelly")
