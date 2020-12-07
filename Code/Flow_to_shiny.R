@@ -31,15 +31,12 @@ priority_flow <- flow %>% filter(Origin %in% priority_countries)
 # Save cleaned data
 write.csv(priority_flow, file="Data/priority_flow.csv")
 
+priority_flow_long <- priority_flow %>%
+  pivot_longer(col = c(3:60),
+               names_to = "year",
+               values_to = "refugees")
 
-afg <- priority_flow %>%
-    filter(Origin == "Afghanistan") %>%
-    pivot_longer(col = c("1980":60),
-                 names_to = "year",
-                 values_to = "refugees") %>%
-    group_by(`Country of asylum`) %>%
-    summarize(total = sum(refugees)) %>%
-    arrange(desc(total)) %>%
-    head(`Country of asylum`, n=5)
+priority_flow_long$`Country of asylum` <- as.factor(priority_flow_long$`Country of asylum`)
 
-
+# Save long data
+write.csv(priority_flow_long, file="Data/priority_flow_long.csv")
