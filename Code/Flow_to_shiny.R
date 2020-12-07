@@ -28,9 +28,6 @@ priority_countries <- c("Afghanistan", "Bangladesh", "Burundi", "Central African
 # Restrict dataset to origins within priority countries
 priority_flow <- flow %>% filter(Origin %in% priority_countries)
 
-# Save cleaned data
-write.csv(priority_flow, file="Data/priority_flow.csv")
-
 priority_flow_long <- priority_flow %>%
   pivot_longer(col = c(3:60),
                names_to = "year",
