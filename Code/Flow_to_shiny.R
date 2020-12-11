@@ -5,6 +5,7 @@
 # Packages
 library(readxl)
 library(tidyverse)
+library(countrycode)
 
 ############
 # Setup and Initial Cleaning
@@ -34,6 +35,13 @@ priority_flow_long <- priority_flow %>%
                values_to = "refugees")
 
 priority_flow_long$`Country of asylum` <- as.factor(priority_flow_long$`Country of asylum`)
+
+
+# Add ISO3 codes
+priority_flow_long$originiso <- countrycode(priority_flow_long$Origin, "country.name", "iso3c")
+priority_flow_long$destiso <- countrycode(priority_flow_long$`Country of asylum`, "country.name", "iso3c")
+
+priority_flow_long <- priority_flow_long[, c(1,5,2,6,3:4)]
 
 # Save long data
 write.csv(priority_flow_long, file="Data/priority_flow_long.csv")
