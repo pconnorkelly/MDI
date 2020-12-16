@@ -12,8 +12,8 @@ library(plotly)
 library(rsconnect)
 
 # Set directory and load data
-setwd("C:/Users/Connor/Documents/GitHub/MDI")
-priority_flow_long <- read_csv("Data/priority_flow_long.csv")
+# setwd("C:/Users/Connor/Documents/GitHub/MDI")
+priority_flow_long <- read_csv("priority_flow_long.csv")
 
 
 # Define UI
