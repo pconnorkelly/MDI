@@ -1,6 +1,6 @@
 # Shiny App: Mapping Forced Migration
 # Connor Kelly
-# December 7, 2020
+# December 15, 2020
 
 # Load packages
 library(shiny)
@@ -42,17 +42,15 @@ server <- function(input, output) {
   # Subset data
   selected_country <- reactive({
     priority_flow_long %>%
-      filter(Origin == input$country, year == input$date) %>%
-      group_by(`Country of asylum`) %>%
-      mutate(total = sum(refugees)) %>%
-      arrange(desc(total))
+      filter(Origin == input$country, year >= input$date)
   })
   
   # Create plot
   output$map <- renderPlotly({
     print(
       plot_ly(selected_country(), type='choropleth', locations=selected_country()$destiso, 
-              z=selected_country()$refugees, colorscale="Blues_r")
+              z=selected_country()$refugees, zmin=0, zmax=max(selected_country()$refugees),
+              frame = selected_country()$year, colorscale="Jet")
     )
     
   })
@@ -61,5 +59,3 @@ server <- function(input, output) {
 # Create Shiny object
 shinyApp(ui = ui, server = server)
 
-# To download and run app from GitHub through R:
-# runGitHub("MDI", "pconnorkelly")
