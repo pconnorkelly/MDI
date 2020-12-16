@@ -1,0 +1,13 @@
+name: Mapping
+title: Mapping
+username:
+account: pconnorkelly
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3409479
+bundleId: 3998342
+url: https://pconnorkelly.shinyapps.io/Mapping/
+when: 1608149258.68507
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: unhcr_cepii.R
