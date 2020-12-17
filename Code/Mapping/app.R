@@ -21,7 +21,7 @@ ui <- fluidPage(theme = shinytheme("lumen"),
                 titlePanel("Flows from Country of Origin"),
                 
                 # Output
-                plotlyOutput(outputId = "map"),
+                plotlyOutput(outputId = "map", height='auto', width='auto'),
                 
                 # Inputs
                 fluidRow(
