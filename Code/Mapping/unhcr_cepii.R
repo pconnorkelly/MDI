@@ -6,6 +6,7 @@
 library(readxl)
 library(tidyverse)
 library(foreign)
+library(haven)
 
 # Set directory
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
