@@ -5,9 +5,9 @@ account: pconnorkelly
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3409479
-bundleId: 3998342
+bundleId: 4001826
 url: https://pconnorkelly.shinyapps.io/Mapping/
-when: 1608149258.68507
+when: 1608218725.1486
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: unhcr_cepii.R
