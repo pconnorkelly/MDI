@@ -1,6 +1,6 @@
 # Hosts
 # Author: Connor Kelly
-# Date: Jan 18 15, 2021
+# Date: Jan 18, 2021
 
 # Packages
 library(readxl)
