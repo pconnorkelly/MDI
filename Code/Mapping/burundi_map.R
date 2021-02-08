@@ -1,4 +1,4 @@
-# Hosts
+# Burundi map
 # Author: Connor Kelly
 # Date: Jan 20, 2021
 
