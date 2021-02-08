@@ -12,6 +12,8 @@ setwd("C:/Users/Connor/Documents/GitHub/MDI")
 
 # Load Nigeria
 nigeria <- read_csv("Data/IOM DTM/nigeria.csv")
+nigeria <- nigeria %>%
+  rename("ASKIRA / UBA")
 #burundi <- burundi[-c(1,2,5,8:19)]
 shape <- st_read ("Data/nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
 shape$ADM2_EN <- toupper(shape$ADM2_EN)
