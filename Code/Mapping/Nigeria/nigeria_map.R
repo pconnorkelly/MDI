@@ -47,7 +47,7 @@ test2
 
 # Plot
 ggplot(data=test2) +
-  geom_sf(aes(fill = `2017-11`))
+  geom_sf(aes(fill = `2019-08`))
 
 
 
