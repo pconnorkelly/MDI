@@ -1,6 +1,6 @@
 # Nigeria map
 # Author: Connor Kelly
-# Date: Jan 20, 2021
+# Date: Feb 11, 2021
 
 # Packages
 library(sf)
