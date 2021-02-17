@@ -7,10 +7,11 @@
 library(readxl)
 library(tidyverse)
 library(lubridate)
-library(dplyr)
 library(openxlsx)
-library(rgeos)
 library(rgdal)
+library(spdep)
+library(plotly)
+library(gghighlight)
 
 # Set directory
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
@@ -21,7 +22,28 @@ vars <- c("lga_name", "estimate_hh_Ward", "estimate_Ind_Ward", "lga_orig")
 # Load shape data
 shape <- st_read ("Data/nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
 shape$ADM2_EN <- toupper(shape$ADM2_EN)
+names(shape)
+summary(shape)
 
+row.names(shape) <- as.character(shape$ADM2_EN)
+
+nb <- poly2nb(shape)
+
+ggplotly(
+  ggplot() +
+    geom_sf(data=shape, aes(fill=ADM2_EN))
+)
+
+# non-unique values when setting 'row.names': 'BASSA', 
+#'IFELODUN', 'IREPODUN', 'NASARAWA', 'OBI', 'SURULERE'
+
+rownames(shape) <- shape$ADM2_EN
+
+
+queen.nb <- poly2nb(shape)
+rook.nb <- poly2nb(shape, queen=FALSE)
+
+queen.listw=nb2listw(queen.nb)
 
 #nigeria$lga <- nigeria$lga %>%
  #recode("ARDO - KOLA" = "ARDO-KOLA") %>%
@@ -33,14 +55,13 @@ shape$ADM2_EN <- toupper(shape$ADM2_EN)
 
 # Load data
 round4 <- read_excel("Data/Nigeria/round4.xlsx") %>%
-  select(`LGA Name`, `Estimated number of households by Ward`, `Estimated number of individuals by Ward`,
-         `LGA of origin of majority`) %>%
   rename(
     lga_name = `LGA Name`,
     estimate_hh_Ward = `Estimated number of households by Ward`,
     estimate_Ind_Ward = `Estimated number of individuals by Ward`,
     lga_orig = `LGA of origin of majority`,
-    )
+    ) %>%
+  select(vars)
   round4$date <- "06-30-2015"
 
 round5 <- read_excel("Data/Nigeria/round5.xlsx") %>%
@@ -82,6 +103,15 @@ round13 <- read_excel("Data/Nigeria/round13.xlsx") %>%
 round14 <- read_excel("Data/Nigeria/round14.xlsx") %>%
   select(vars)
   round14$date <- "01-25-2017"
+  
+round15 <- read_excel("Data/Nigeria/round15.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
 
 # Merge data
 nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, round13, round14,
