@@ -31,7 +31,13 @@ nb <- poly2nb(shape)
 
 ggplotly(
   ggplot() +
-    geom_sf(data=shape, aes(fill=ADM2_EN))
+    geom_sf(data=shape, aes(fill=ADM2_EN)) +
+    gghighlight(ADM2_EN == "BASSA" | 
+                  ADM2_EN == "IFELODUN" | 
+                  ADM2_EN == "IREPODUN" | 
+                  ADM2_EN == "NASARAWA" | 
+                  ADM2_EN == "OBI" | 
+                  ADM2_EN == "SURULERE")
 )
 
 # non-unique values when setting 'row.names': 'BASSA', 
