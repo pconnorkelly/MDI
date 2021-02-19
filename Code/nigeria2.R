@@ -43,14 +43,6 @@ ggplotly(
 # non-unique values when setting 'row.names': 'BASSA', 
 #'IFELODUN', 'IREPODUN', 'NASARAWA', 'OBI', 'SURULERE'
 
-rownames(shape) <- shape$ADM2_EN
-
-
-queen.nb <- poly2nb(shape)
-rook.nb <- poly2nb(shape, queen=FALSE)
-
-queen.listw=nb2listw(queen.nb)
-
 #nigeria$lga <- nigeria$lga %>%
  #recode("ARDO - KOLA" = "ARDO-KOLA") %>%
   #recode("ASKIRA / UBA" = "ASKIRA/UBA") %>%
@@ -118,9 +110,141 @@ round15 <- read_excel("Data/Nigeria/round15.xlsx") %>%
     lga_orig = `LGA of Origin of Majority`,
   ) %>%
   select(vars)
+  round15$date <- "05-15-2017"
+
+round16 <- read_excel("Data/Nigeria/round16.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round16$date <- "05-17-2017"
+  
+round17 <- read_excel("Data/Nigeria/round17.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round17$date <- "06-26-2017"
+  
+round18 <- read_excel("Data/Nigeria/round18.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round18$date <- "11-23-2017"
+  
+round19 <- read_excel("Data/Nigeria/round19.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round19$date <- "09-30-2017"
+  
+round20 <- read_excel("Data/Nigeria/round20.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round20$date <- "12-08-2017"
+  
+round21 <- read_excel("Data/Nigeria/round21.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round21$date <- "01-31-2018"
+  
+round22 <- read_excel("Data/Nigeria/round22.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round22$date <- "04-30-2018"
+  
+round23  <- read_excel("Data/Nigeria/round23.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round23$date <- "06-16-2018"
+
+round24 <- read_excel("Data/Nigeria/round24.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round24$date <- "08-06-2018"
+
+round25 <- read_excel("Data/Nigeria/round25.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round25$date <- "10-20-2018"
+  
+round26 <- read_excel("Data/Nigeria/round26.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+
+round27 <- read_excel("Data/Nigeria/round27.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round27$date <- "05-29-2019"
+  
+round28 <- read_excel("Data/Nigeria/round28.xlsx") %>%
+  rename(
+    lga_name = `LGA`,
+    estimate_hh_Ward = `Estimated Household Number`,
+    estimate_Ind_Ward = `Estimated Number of IDP`,
+    lga_orig = `LGA of Origin of Majority`,
+  ) %>%
+  select(vars)
+  round28$date <- "09-16-2019"
 
 # Merge data
-nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, round13, round14,
+nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, 
+                 round13, round14, round15, round16, round17, round18, round19, round20, 
+                 round21, round22, round23, round24, round25, round26, round27, round28
                  by=c("lga_name", "lga_orig"))
   nigeria$estimate_hh_Ward <- as.numeric(nigeria$estimate_hh_Ward)
   nigeria$estimate_Ind_Ward <- as.numeric(nigeria$estimate_Ind_Ward)
