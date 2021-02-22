@@ -244,7 +244,7 @@ round28 <- read_excel("Data/Nigeria/round28.xlsx") %>%
 # Merge data
 nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, 
                  round13, round14, round15, round16, round17, round18, round19, round20, 
-                 round21, round22, round23, round24, round25, round26, round27, round28
+                 round21, round22, round23, round24, round25, round26, round27, round28,
                  by=c("lga_name", "lga_orig"))
   nigeria$estimate_hh_Ward <- as.numeric(nigeria$estimate_hh_Ward)
   nigeria$estimate_Ind_Ward <- as.numeric(nigeria$estimate_Ind_Ward)
