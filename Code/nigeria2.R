@@ -1,6 +1,6 @@
 # Nigeria redux
 # Author: Connor Kelly
-# Date: Feb 17, 2021
+# Date: March 2, 2021
 # Going back to re-do IOM data aggregation to ensure origin and destination data
 
 # Packages
@@ -220,6 +220,7 @@ round26 <- read_excel("Data/Nigeria/round26.xlsx") %>%
     lga_orig = `LGA of Origin of Majority`,
   ) %>%
   select(vars)
+  round26$date <- "01-20-2019"
 
 round27 <- read_excel("Data/Nigeria/round27.xlsx") %>%
   rename(
@@ -254,3 +255,32 @@ nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round1
 nigeria <- nigeria %>%
   group_by(lga_name, lga_orig, date) %>%
   summarize(estimate_hh = sum(estimate_hh_Ward), estimate_ind = sum(estimate_Ind_Ward))
+
+
+# Population data
+
+pop_adm2 <- read_csv("Data/Nigeria/nga_pop_adm2_2016.csv")
+pop_adm2 <- pop_adm2 %>% select(admin2Name_en, Population2016)
+pop_adm2$admin2Name_en <- toupper(pop_adm2$admin2Name_en)
+
+# double named lgas
+# Bassa
+# Ifelodun
+# Irepodun
+# Nasarawa
+# Obi
+# Surulere
+
+# Origin population
+nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_orig"), by.y=c("admin2Name_en"))
+
+# Destination population
+nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_name"), by.y=c("admin2Name_en"))
+
+nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
+                              dest_pop = Population2016.y)
+
+acled <- read_csv("Data/Nigeria/nigeria_acled.csv")
+# Origin pop
+# Destination pop
+# Acled event count / fatalities
