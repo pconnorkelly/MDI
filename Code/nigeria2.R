@@ -12,52 +12,32 @@ library(rgdal)
 library(spdep)
 library(plotly)
 library(gghighlight)
+library(jtools)
+library(zoo)
+library(reshape2)
+library(expp)
+library(raster)
+library(conflicted)
+
+conflict_prefer("select", "dplyr")
 
 # Set directory
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
 
 # Variables of interest
-vars <- c("lga_name", "estimate_hh_Ward", "estimate_Ind_Ward", "lga_orig")
-
-# Load shape data
-shape <- st_read ("Data/nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
-shape$ADM2_EN <- toupper(shape$ADM2_EN)
-names(shape)
-summary(shape)
-
-row.names(shape) <- as.character(shape$ADM2_EN)
-
-nb <- poly2nb(shape)
-
-ggplotly(
-  ggplot() +
-    geom_sf(data=shape, aes(fill=ADM2_EN)) +
-    gghighlight(ADM2_EN == "BASSA" | 
-                  ADM2_EN == "IFELODUN" | 
-                  ADM2_EN == "IREPODUN" | 
-                  ADM2_EN == "NASARAWA" | 
-                  ADM2_EN == "OBI" | 
-                  ADM2_EN == "SURULERE")
-)
-
-# non-unique values when setting 'row.names': 'BASSA', 
-#'IFELODUN', 'IREPODUN', 'NASARAWA', 'OBI', 'SURULERE'
-
-#nigeria$lga <- nigeria$lga %>%
- #recode("ARDO - KOLA" = "ARDO-KOLA") %>%
-  #recode("ASKIRA / UBA" = "ASKIRA/UBA") %>%
-  #recode("KWAYA / KUSAR" = "KWAYA/KUSAR") %>%
-  #recode("MAIDUGURI M. C." = "MAIDUGURI") %>%
-  #recode("MAYO - BELWA" = "MAYO-BELWA") %>%
-  #recode("YALMALTU/ DEBA" = "YALAMALTU/DEBA")
+vars <- c("lga_name", "state_name", "estimate_hh_Ward", "estimate_Ind_Ward", 
+          "lga_orig", "state_orig")
 
 # Load data
+######
 round4 <- read_excel("Data/Nigeria/round4.xlsx") %>%
   rename(
     lga_name = `LGA Name`,
+    state_name = `State Name`,
     estimate_hh_Ward = `Estimated number of households by Ward`,
     estimate_Ind_Ward = `Estimated number of individuals by Ward`,
     lga_orig = `LGA of origin of majority`,
+    state_orig = `State of origin of majority`
     ) %>%
   select(vars)
   round4$date <- "06-30-2015"
@@ -105,9 +85,11 @@ round14 <- read_excel("Data/Nigeria/round14.xlsx") %>%
 round15 <- read_excel("Data/Nigeria/round15.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round15$date <- "05-15-2017"
@@ -115,9 +97,11 @@ round15 <- read_excel("Data/Nigeria/round15.xlsx") %>%
 round16 <- read_excel("Data/Nigeria/round16.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round16$date <- "05-17-2017"
@@ -125,9 +109,11 @@ round16 <- read_excel("Data/Nigeria/round16.xlsx") %>%
 round17 <- read_excel("Data/Nigeria/round17.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round17$date <- "06-26-2017"
@@ -135,9 +121,11 @@ round17 <- read_excel("Data/Nigeria/round17.xlsx") %>%
 round18 <- read_excel("Data/Nigeria/round18.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round18$date <- "11-23-2017"
@@ -145,9 +133,11 @@ round18 <- read_excel("Data/Nigeria/round18.xlsx") %>%
 round19 <- read_excel("Data/Nigeria/round19.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round19$date <- "09-30-2017"
@@ -155,9 +145,11 @@ round19 <- read_excel("Data/Nigeria/round19.xlsx") %>%
 round20 <- read_excel("Data/Nigeria/round20.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round20$date <- "12-08-2017"
@@ -165,9 +157,11 @@ round20 <- read_excel("Data/Nigeria/round20.xlsx") %>%
 round21 <- read_excel("Data/Nigeria/round21.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round21$date <- "01-31-2018"
@@ -175,9 +169,11 @@ round21 <- read_excel("Data/Nigeria/round21.xlsx") %>%
 round22 <- read_excel("Data/Nigeria/round22.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round22$date <- "04-30-2018"
@@ -185,9 +181,11 @@ round22 <- read_excel("Data/Nigeria/round22.xlsx") %>%
 round23  <- read_excel("Data/Nigeria/round23.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round23$date <- "06-16-2018"
@@ -195,9 +193,11 @@ round23  <- read_excel("Data/Nigeria/round23.xlsx") %>%
 round24 <- read_excel("Data/Nigeria/round24.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round24$date <- "08-06-2018"
@@ -205,9 +205,11 @@ round24 <- read_excel("Data/Nigeria/round24.xlsx") %>%
 round25 <- read_excel("Data/Nigeria/round25.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round25$date <- "10-20-2018"
@@ -215,9 +217,11 @@ round25 <- read_excel("Data/Nigeria/round25.xlsx") %>%
 round26 <- read_excel("Data/Nigeria/round26.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round26$date <- "01-20-2019"
@@ -225,9 +229,11 @@ round26 <- read_excel("Data/Nigeria/round26.xlsx") %>%
 round27 <- read_excel("Data/Nigeria/round27.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round27$date <- "05-29-2019"
@@ -235,52 +241,161 @@ round27 <- read_excel("Data/Nigeria/round27.xlsx") %>%
 round28 <- read_excel("Data/Nigeria/round28.xlsx") %>%
   rename(
     lga_name = `LGA`,
+    state_name = `State of Displacement`,
     estimate_hh_Ward = `Estimated Household Number`,
     estimate_Ind_Ward = `Estimated Number of IDP`,
     lga_orig = `LGA of Origin of Majority`,
+    state_orig = `State of Origin of Majority`
   ) %>%
   select(vars)
   round28$date <- "09-16-2019"
 
+######  
+  
 # Merge data
+#####
 nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, 
                  round13, round14, round15, round16, round17, round18, round19, round20, 
                  round21, round22, round23, round24, round25, round26, round27, round28,
-                 by=c("lga_name", "lga_orig"))
+                 by=c("lga_name", "state_name", "lga_orig", "state_orig"))
   nigeria$estimate_hh_Ward <- as.numeric(nigeria$estimate_hh_Ward)
   nigeria$estimate_Ind_Ward <- as.numeric(nigeria$estimate_Ind_Ward)
+  # Rename certain place names for consistency
+  nigeria$lga_name[nigeria$lga_name == "ARDO - KOLA"] <- "ARDO-KOLA"
+  nigeria$lga_name[nigeria$lga_name == "ASKIRA / UBA"] <- "ASKIRA/UBA"
+  nigeria$lga_name[nigeria$lga_name == "KWAYA / KUSAR"] <- "KWAYA/KUSAR"
+  nigeria$lga_name[nigeria$lga_name == "MAIDUGURI M. C."] <- "MAIDUGURI"
+  nigeria$lga_name[nigeria$lga_name == "MAYO - BELWA"] <- "MAYO-BELWA"
+  nigeria$lga_name[nigeria$lga_name == "YALMALTU/ DEBA"] <- "YALAMALTU/DEBA"
+  nigeria$state_name[nigeria$state_name == "FCT"] <- "FEDERAL CAPITAL TERRITORY"
+  # Convert to factors
   nigeria$lga_name <- as.factor(nigeria$lga_name)
+  nigeria$state_name <- as.factor(nigeria$state_name)
   nigeria$lga_orig <- as.factor(nigeria$lga_orig)
-  
-nigeria <- nigeria %>%
-  group_by(lga_name, lga_orig, date) %>%
-  summarize(estimate_hh = sum(estimate_hh_Ward), estimate_ind = sum(estimate_Ind_Ward))
+  nigeria$state_orig <- as.factor(nigeria$state_orig)
 
+# Simplify to monthly data
+  nigeria$year <- substr(nigeria$date,7,10)
+  nigeria$month <- substr(nigeria$date,1,2)  
+    
+nigeria <- nigeria %>%
+  group_by(lga_name, state_name, lga_orig, state_orig, year, month) %>%
+  summarize(estimate_hh = sum(estimate_hh_Ward), estimate_ind = sum(estimate_Ind_Ward))
+#####
 
 # Population data
-
+#####
 pop_adm2 <- read_csv("Data/Nigeria/nga_pop_adm2_2016.csv")
-pop_adm2 <- pop_adm2 %>% select(admin2Name_en, Population2016)
+pop_adm2 <- pop_adm2 %>% select(admin2Name_en, admin1Name_en, Population2016)
 pop_adm2$admin2Name_en <- toupper(pop_adm2$admin2Name_en)
-
-# double named lgas
-# Bassa
-# Ifelodun
-# Irepodun
-# Nasarawa
-# Obi
-# Surulere
+pop_adm2$admin2Name_en <- as.factor(pop_adm2$admin2Name_en)
+pop_adm2$admin1Name_en <- toupper(pop_adm2$admin1Name_en)
+pop_adm2$admin1Name_en <- as.factor(pop_adm2$admin1Name_en)
 
 # Origin population
-nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_orig"), by.y=c("admin2Name_en"))
+nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_orig", "state_orig"), 
+                 by.y=c("admin2Name_en", "admin1Name_en"))
 
 # Destination population
-nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_name"), by.y=c("admin2Name_en"))
+nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_name", "state_orig"), 
+                 by.y=c("admin2Name_en", "admin1Name_en"))
 
 nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
                               dest_pop = Population2016.y)
+#####
 
-acled <- read_csv("Data/Nigeria/nigeria_acled.csv")
-# Origin pop
-# Destination pop
-# Acled event count / fatalities
+# ACLED
+#####
+acled <- read_csv("Data/Nigeria/2018-02-27-2021-03-03-Nigeria.csv")
+# Only data available to me for past three years
+acled$date <- strptime(acled$event_date, "%d %B %Y")
+acled$month <- format(as.Date(acled$date), "%m")
+
+acled <- acled %>% select(event_type, admin2, admin1, month, year, fatalities)
+acled$admin1 <- toupper(acled$admin1)
+acled$admin2 <- toupper(acled$admin2)
+
+acled$event_type <- as.factor(acled$event_type)
+
+acled <- acled %>% group_by(event_type, admin2, admin1, month, year) %>%
+  summarize(fatalities = sum(fatalities))
+
+acled <- pivot_wider(acled, names_from = event_type, values_from = fatalities, 
+                     values_fill = 0)
+
+acled <- acled %>% rename(battle.fatal = `Battles`,
+                          violence.fatal = `Violence against civilians`,
+                          riots.fatal = `Riots`,
+                          explosions.fatal = `Explosions/Remote violence`)
+
+nigeria <- merge(x=nigeria, y=acled, by.x=c("lga_orig", "state_orig", "year", 
+                "month"), by.y=c("admin2", "admin1", "year", "month"))
+nigeria[is.na(nigeria)] <- 0
+
+
+#####
+
+# Spatial data
+#####
+shape <- shapefile("Data/nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
+shape$ADM2_EN <- toupper(shape$ADM2_EN)
+shape$ADM1_EN <- toupper(shape$ADM1_EN)
+
+adm2_codes <- as.data.frame(shape@data)
+adm2_codes <- adm2_codes %>% dplyr::select(ADM2_EN, ADM2_PCODE, ADM1_EN)
+
+row.names(shape) = shape$ADM2_PCODE
+
+nb <- poly2nb(shape)
+nb
+
+plot(shape, col='gray', border='blue')
+
+xy <- coordinates(shape)
+
+plot(nb, xy, col='red', add=T)
+
+nb.df <- neighborsDataFrame(nb)
+nb.df
+
+nb.df$neighbor <- 1
+nb.df <- as.data.frame(complete(nb.df, id, id_neigh, fill=list(neighbor=0)))
+
+nb.df <- merge(nb.df, adm2_codes, by.x=c("id"), by.y=c("ADM2_PCODE"))
+nb.df <- merge(nb.df, adm2_codes, by.x=c("id_neigh"), by.y=c("ADM2_PCODE"))
+
+nb.df <- nb.df %>% rename(
+  id_dest = `id`,
+  id_orig = `id_neigh`,
+  lga_name = `ADM2_EN.x`,
+  lga_orig = `ADM2_EN.y`,
+  state_name = `ADM1_EN.x`,
+  state_orig = `ADM1_EN.y`
+)
+
+nbweights <- nb2listw(nb, style="W", zero.policy=T)
+
+nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
+                                     "state_orig"))
+
+#####
+
+# Four simplest models
+# OLS (non-spatial)
+# SLX Spatially lagged x (local spatial model)
+# SAR Spatial lag (global spatial model)
+# SEM spatial error (also global)
+
+# OLS
+ols <- lm(estimate_ind ~ origin_pop + dest_pop + battle.fatal + 
+            explosions.fatal + violence.fatal + neighbor, data=nigeria)
+summary(ols)
+
+# Potential next steps to improve model
+# Full ACLED data (I was only given permission for past three years)
+# Additional predictors
+# Lag variables
+  # perhaps ACLED events are more useful when considering the prior month
+# Any other ideas?
+
+
