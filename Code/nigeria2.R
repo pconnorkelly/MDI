@@ -17,6 +17,7 @@ library(zoo)
 library(reshape2)
 library(expp)
 library(raster)
+library(distances)
 library(conflicted)
 
 conflict_prefer("select", "dplyr")
@@ -374,6 +375,7 @@ nb.df <- nb.df %>% rename(
 )
 
 nbweights <- nb2listw(nb, style="W", zero.policy=T)
+# return to weights later
 
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
                                      "state_orig"))
@@ -393,6 +395,7 @@ summary(ols)
 
 # Potential next steps to improve model
 # Full ACLED data (I was only given permission for past three years)
+# More precise distance data between LGAs / weight
 # Additional predictors
 # Lag variables
   # perhaps ACLED events are more useful when considering the prior month
