@@ -382,23 +382,45 @@ nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
 
 #####
 
-# Four simplest models
-# OLS (non-spatial)
-# SLX Spatially lagged x (local spatial model)
-# SAR Spatial lag (global spatial model)
-# SEM spatial error (also global)
+# Models
 
 # OLS
-ols <- lm(estimate_ind ~ origin_pop + dest_pop + battle.fatal + 
+ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + battle.fatal + 
             explosions.fatal + violence.fatal + neighbor, data=nigeria)
-summary(ols)
+summary(ols_ind)
 
-# Potential next steps to improve model
+ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + battle.fatal + 
+               explosions.fatal + violence.fatal + neighbor, data=nigeria)
+summary(ols_hh)
+
+
+# Potential next steps to improve model(s)
+# forecasting in addition to now-casting
+# local/global spatial models
 # Full ACLED data (I was only given permission for past three years)
+# ACLED event counts in addition to fatalities
 # More precise distance data between LGAs / weight
 # Additional predictors
+# distance from foreign border?
 # Lag variables
   # perhaps ACLED events are more useful when considering the prior month
 # Any other ideas?
+# zero inflated model, include complete pairs of LGAs, including instances of 
+# zero IDPs
+
+#### NEXT STEPS ###
+# Include distance (lat long)
+# Use Poisson model
+# zero inflated, set threshold
+# UCDP has further back data, should have Admin2 level
+# apply models from Henry's paper outline
+# Radiation models from David (in Google Drive)
+# 
 
 
+summary(nigeria$estimate_hh)
+summary(nigeria$estimate_ind)
+
+ggplot(nigeria, aes(x=estimate_hh)) + geom_density()
+ggplot(nigeria, aes(x=estimate_ind)) + geom_density()
+# the distribution of IDPs is already very right-skewed
