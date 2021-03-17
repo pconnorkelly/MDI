@@ -1,6 +1,6 @@
 # Nigeria redux
 # Author: Connor Kelly
-# Date: March 2, 2021
+# Date: March 17, 2021
 # Going back to re-do IOM data aggregation to ensure origin and destination data
 
 # Packages
@@ -18,6 +18,7 @@ library(reshape2)
 library(expp)
 library(raster)
 library(distances)
+library(pscl)
 library(conflicted)
 
 conflict_prefer("select", "dplyr")
@@ -307,33 +308,46 @@ nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
 
 # ACLED
 #####
-acled <- read_csv("Data/Nigeria/2018-02-27-2021-03-03-Nigeria.csv")
-# Only data available to me for past three years
-acled$date <- strptime(acled$event_date, "%d %B %Y")
-acled$month <- format(as.Date(acled$date), "%m")
+# acled <- read_csv("Data/Nigeria/2018-02-27-2021-03-03-Nigeria.csv")
+# # Only data available to me for past three years
+# acled$date <- strptime(acled$event_date, "%d %B %Y")
+# acled$month <- format(as.Date(acled$date), "%m")
+# 
+# acled <- acled %>% select(event_type, admin2, admin1, month, year, fatalities)
+# acled$admin1 <- toupper(acled$admin1)
+# acled$admin2 <- toupper(acled$admin2)
+# 
+# acled$event_type <- as.factor(acled$event_type)
+# 
+# acled <- acled %>% group_by(event_type, admin2, admin1, month, year) %>%
+#   summarize(fatalities = sum(fatalities))
+# 
+# acled <- pivot_wider(acled, names_from = event_type, values_from = fatalities, 
+#                      values_fill = 0)
+# 
+# acled <- acled %>% rename(battle.fatal = `Battles`,
+#                           violence.fatal = `Violence against civilians`,
+#                           riots.fatal = `Riots`,
+#                           explosions.fatal = `Explosions/Remote violence`)
+# 
+# nigeria <- merge(x=nigeria, y=acled, by.x=c("lga_orig", "state_orig", "year", 
+#                 "month"), by.y=c("admin2", "admin1", "year", "month"))
+# nigeria[is.na(nigeria)] <- 0
 
-acled <- acled %>% select(event_type, admin2, admin1, month, year, fatalities)
-acled$admin1 <- toupper(acled$admin1)
-acled$admin2 <- toupper(acled$admin2)
+# ACLED data back to 1997
+acled97 <- read_csv("Data/Nigeria/acledFatalitiesMonthlyNigeriaAdmin2.xlsx - Sheet1.csv")
 
-acled$event_type <- as.factor(acled$event_type)
+acled97 <- acled97 %>% 
+  replace(is.na(.),0)
+acled97$ADMIN2 <- toupper(acled97$ADMIN2)
 
-acled <- acled %>% group_by(event_type, admin2, admin1, month, year) %>%
-  summarize(fatalities = sum(fatalities))
+acled97 <- pivot_longer(acled97, !ADMIN2, names_to = "date", values_to="fatalities")
+acled97$year <- substr(acled97$date,4,7)
+acled97$month <- substr(acled97$date,1,2)  
 
-acled <- pivot_wider(acled, names_from = event_type, values_from = fatalities, 
-                     values_fill = 0)
-
-acled <- acled %>% rename(battle.fatal = `Battles`,
-                          violence.fatal = `Violence against civilians`,
-                          riots.fatal = `Riots`,
-                          explosions.fatal = `Explosions/Remote violence`)
-
-nigeria <- merge(x=nigeria, y=acled, by.x=c("lga_orig", "state_orig", "year", 
-                "month"), by.y=c("admin2", "admin1", "year", "month"))
+nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_orig", "year", "month"),
+                 by.y=c("ADMIN2", "year", "month"))
 nigeria[is.na(nigeria)] <- 0
-
-
 #####
 
 # Spatial data
@@ -417,10 +431,23 @@ summary(ols_hh)
 # Radiation models from David (in Google Drive)
 # 
 
+# Poisson
+summary(p_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, 
+    data=nigeria, family = 'poisson'))
 
+summary(p_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
+    data=nigeria, family = 'poisson'))
+
+# Zero inflated
+
+## CHECK: Is this right? Set all observations below certain value to zero
 summary(nigeria$estimate_hh)
-summary(nigeria$estimate_ind)
+nigeria$estimate_hh <- ifelse(nigeria$estimate_hh<1000,0,nigeria$estimate_hh)
 
-ggplot(nigeria, aes(x=estimate_hh)) + geom_density()
-ggplot(nigeria, aes(x=estimate_ind)) + geom_density()
-# the distribution of IDPs is already very right-skewed
+# Zero inflated Poisson
+summary(zp_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, 
+    data=nigeria, family = 'poisson'))
+
+summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
+    data=nigeria, family = 'poisson'))
+
