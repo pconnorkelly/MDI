@@ -391,7 +391,7 @@ nb.df <- nb.df %>% rename(
 
 nbweights <- nb2listw(nb, style="W", zero.policy=T)
 
-OasisR::distance(spatobj = shape)
+#OasisR::distance(spatobj = shape)
 summary(nigeria)
 
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
@@ -402,12 +402,10 @@ nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
 # Models
 
 # OLS
-ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + battle.fatal + 
-            explosions.fatal + violence.fatal + neighbor, data=nigeria)
+ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, data=nigeria)
 summary(ols_ind)
 
-ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + battle.fatal + 
-               explosions.fatal + violence.fatal + neighbor, data=nigeria)
+ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, data=nigeria)
 summary(ols_hh)
 
 
@@ -458,4 +456,21 @@ nigeria$estimate_ind <- ifelse(nigeria$estimate_ind<2000,0,nigeria$estimate_ind)
 
 summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
     data=nigeria, family = 'poisson'))
+
+# negative binomial, will probably have similar answer
+# try it
+# non-independence based on origin
+# cluster at originating LGA
+# incorporate distance
+# lock down standard errors
+# theorize about destinations
+# nowcast why we see flows from place a to place b
+# understand relative attractiveness of destination
+# measure accumulated number of displaced people in LGA up to t minus one
+# get centroids for LGAs to calculate distances
+# transform from spdf to sf using sf package
+# convert pop data to thousands, whatever necessary to balance scale
+# use 2015-2018 data to predict, how accurately can it predict 2019?
+# look at fatalities at destination
+
 
