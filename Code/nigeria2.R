@@ -19,6 +19,7 @@ library(expp)
 library(raster)
 library(distances)
 library(pscl)
+library(OasisR)
 library(conflicted)
 
 conflict_prefer("select", "dplyr")
@@ -389,7 +390,9 @@ nb.df <- nb.df %>% rename(
 )
 
 nbweights <- nb2listw(nb, style="W", zero.policy=T)
-# return to weights later
+
+OasisR::distance(spatobj = shape)
+summary(nigeria)
 
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
                                      "state_orig"))
@@ -439,6 +442,8 @@ summary(p_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbo
     data=nigeria, family = 'poisson'))
 
 # Zero inflated
+g <- ggplot(nigeria, aes(x=estimate_ind)) + geom_density()
+ggplotly(g)
 
 ## CHECK: Is this right? Set all observations below certain value to zero
 summary(nigeria$estimate_hh)
@@ -447,6 +452,9 @@ nigeria$estimate_hh <- ifelse(nigeria$estimate_hh<1000,0,nigeria$estimate_hh)
 # Zero inflated Poisson
 summary(zp_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, 
     data=nigeria, family = 'poisson'))
+
+nigeria$estimate_ind <- ifelse(nigeria$estimate_ind<2000,0,nigeria$estimate_ind)
+
 
 summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
     data=nigeria, family = 'poisson'))
