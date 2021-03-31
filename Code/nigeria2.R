@@ -413,80 +413,6 @@ summary(nigeria)
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
                                      "state_orig"))
 
-#####
-
-# Models
-
-# OLS
-ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, data=nigeria)
-summary(ols_ind)
-
-ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, data=nigeria)
-summary(ols_hh)
-
-
-# Potential next steps to improve model(s)
-# forecasting in addition to now-casting
-# local/global spatial models
-# Full ACLED data (I was only given permission for past three years)
-# ACLED event counts in addition to fatalities
-# More precise distance data between LGAs / weight
-# Additional predictors
-# distance from foreign border?
-# Lag variables
-  # perhaps ACLED events are more useful when considering the prior month
-# Any other ideas?
-# zero inflated model, include complete pairs of LGAs, including instances of 
-# zero IDPs
-
-#### NEXT STEPS ###
-# Include distance (lat long)
-# Use Poisson model
-# zero inflated, set threshold
-# UCDP has further back data, should have Admin2 level
-# apply models from Henry's paper outline
-# Radiation models from David (in Google Drive)
-# 
-
-# Poisson
-summary(p_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, 
-    data=nigeria, family = 'poisson'))
-
-summary(p_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
-    data=nigeria, family = 'poisson'))
-
-# Zero inflated
-g <- ggplot(nigeria, aes(x=estimate_ind)) + geom_density()
-ggplotly(g)
-
-## CHECK: Is this right? Set all observations below certain value to zero
-summary(nigeria$estimate_hh)
-nigeria$estimate_hh <- ifelse(nigeria$estimate_hh<1000,0,nigeria$estimate_hh)
-
-# Zero inflated Poisson
-summary(zp_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatalities + neighbor, 
-    data=nigeria, family = 'poisson'))
-
-nigeria$estimate_ind <- ifelse(nigeria$estimate_ind<2000,0,nigeria$estimate_ind)
-
-
-summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighbor, 
-    data=nigeria, family = 'poisson'))
-
-# negative binomial, will probably have similar answer
-# try it
-# non-independence based on origin
-# cluster at originating LGA
-# incorporate distance
-# lock down standard errors
-# theorize about destinations
-# nowcast why we see flows from place a to place b
-# understand relative attractiveness of destination
-# measure accumulated number of displaced people in LGA up to t minus one
-# get centroids for LGAs to calculate distances
-# use 2015-2018 data to predict, how accurately can it predict 2019?
-# look at fatalities at destination
-
 sf <- st_as_sf(shape)
 
 dist <- CreateDistMatrix(sf, sf)
@@ -514,7 +440,89 @@ nigeria <- nigeria %>%
          dest_pop = dest_pop / 1000,
          distance = distance / 1000)
 
-summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + 
-                      neighbor + distance, data=nigeria, family = 'poisson'))
+#####
+
+# Models
+
+# OLS
+summary(ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + fatal.dest +
+                neighbor + distance, data=nigeria))
+
+
+summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + fatal.dest + 
+               neighbor + distance, data=nigeria))
+
+
+# Potential next steps to improve model(s)
+# forecasting in addition to now-casting
+# local/global spatial models
+# Full ACLED data (I was only given permission for past three years)
+# ACLED event counts in addition to fatalities
+# More precise distance data between LGAs / weight
+# Additional predictors
+# distance from foreign border?
+# Lag variables
+  # perhaps ACLED events are more useful when considering the prior month
+# Any other ideas?
+# zero inflated model, include complete pairs of LGAs, including instances of 
+# zero IDPs
+
+#### NEXT STEPS ###
+# Include distance (lat long)
+# Use Poisson model
+# zero inflated, set threshold
+# UCDP has further back data, should have Admin2 level
+# apply models from Henry's paper outline
+# Radiation models from David (in Google Drive)
+# 
+
+# Poisson
+summary(p_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatal.origin +
+                      fatal.dest + neighbor + distance, 
+    data=nigeria, family = 'poisson'))
+
+summary(p_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
+                       fatal.dest + neighbor + distance, 
+    data=nigeria, family = 'poisson'))
+
+# Zero inflated
+g <- ggplot(nigeria, aes(x=estimate_ind)) + geom_density()
+ggplotly(g)
+
+## CHECK: Is this right? Set all observations below certain value to zero
+summary(nigeria$estimate_hh)
+nigeria$estimate_hh <- ifelse(nigeria$estimate_hh<1000,0,nigeria$estimate_hh)
+
+# Zero inflated Poisson
+summary(zp_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatal.dest + 
+                       fatal.origin + neighbor + distance, 
+    data=nigeria, family = 'poisson'))
+
+nigeria$estimate_ind <- ifelse(nigeria$estimate_ind<2000,0,nigeria$estimate_ind)
+
+
+summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
+                        fatal.origin + neighbor + distance, 
+    data=nigeria, family = 'poisson'))
+
+# negative binomial, will probably have similar answer
+# try it
+# non-independence based on origin
+# cluster at originating LGA
+# incorporate distance
+# lock down standard errors
+# theorize about destinations
+# nowcast why we see flows from place a to place b
+# understand relative attractiveness of destination
+# measure accumulated number of displaced people in LGA up to t minus one
+# get centroids for LGAs to calculate distances
+# use 2015-2018 data to predict, how accurately can it predict 2019?
+# look at fatalities at destination
+
+
+
+summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
+                      fatal.origin + neighbor + distance, data=nigeria, 
+                      family = 'poisson'))
 
 
