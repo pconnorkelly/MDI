@@ -11,6 +11,7 @@ library(openxlsx)
 library(rgdal)
 library(spdep)
 library(plotly)
+library(sf)
 library(gghighlight)
 library(jtools)
 library(zoo)
@@ -21,6 +22,10 @@ library(distances)
 library(pscl)
 library(OasisR)
 library(conflicted)
+library(lwgeom)
+library(potential)
+library(SpatialPosition)
+
 
 conflict_prefer("select", "dplyr")
 
@@ -305,6 +310,7 @@ nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_name", "state_orig"),
 
 nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
                               dest_pop = Population2016.y)
+
 #####
 
 # ACLED
@@ -348,7 +354,17 @@ acled97$month <- substr(acled97$date,1,2)
 
 nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_orig", "year", "month"),
                  by.y=c("ADMIN2", "year", "month"))
+# Merge again on destination
+nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_name", "year", "month"),
+                 by.y=c("ADMIN2", "year", "month"))
 nigeria[is.na(nigeria)] <- 0
+
+nigeria <- nigeria %>%
+  rename(
+    fatal.origin = fatalities.x,
+    fatal.dest = fatalities.y
+  )
+
 #####
 
 # Spatial data
@@ -468,9 +484,37 @@ summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + neighb
 # understand relative attractiveness of destination
 # measure accumulated number of displaced people in LGA up to t minus one
 # get centroids for LGAs to calculate distances
-# transform from spdf to sf using sf package
-# convert pop data to thousands, whatever necessary to balance scale
 # use 2015-2018 data to predict, how accurately can it predict 2019?
 # look at fatalities at destination
+
+sf <- st_as_sf(shape)
+
+dist <- CreateDistMatrix(sf, sf)
+dist <- melt(dist)[melt(upper.tri(dist))$value,]
+
+# create copy of dist matrix
+# swap orig and dest columns
+# append to original matrix
+# boom, you have a full matrix
+
+dist2 <- dist
+dist2 <- dist2[,c(2,1,3)]
+distance <- rbind(dist, dist2)
+
+nigeria <- merge(nigeria, distance, by.x=c("id_orig", "id_dest"), 
+                 by.y=c("Var1", "Var2"))
+nigeria <- nigeria %>% rename(
+  distance = value
+)
+
+summary(nigeria)
+
+nigeria <- nigeria %>%
+  mutate(origin_pop = origin_pop / 1000,
+         dest_pop = dest_pop / 1000,
+         distance = distance / 1000)
+
+summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatalities + 
+                      neighbor + distance, data=nigeria, family = 'poisson'))
 
 
