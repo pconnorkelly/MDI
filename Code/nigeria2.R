@@ -445,12 +445,14 @@ nigeria <- nigeria %>%
 # Models
 
 # OLS
-summary(ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + fatal.dest +
-                neighbor + distance, data=nigeria))
+summary(ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
+                    fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                    neighbor + distance, data=nigeria))
 
 
-summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + fatal.dest + 
-               neighbor + distance, data=nigeria))
+summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + 
+                    fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                    neighbor + distance, data=nigeria))
 
 
 # Potential next steps to improve model(s)
@@ -466,15 +468,6 @@ summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + fatal.
 # Any other ideas?
 # zero inflated model, include complete pairs of LGAs, including instances of 
 # zero IDPs
-
-#### NEXT STEPS ###
-# Include distance (lat long)
-# Use Poisson model
-# zero inflated, set threshold
-# UCDP has further back data, should have Admin2 level
-# apply models from Henry's paper outline
-# Radiation models from David (in Google Drive)
-# 
 
 # Poisson
 summary(p_hh <- glm(estimate_hh ~ origin_pop + dest_pop + fatal.origin +
@@ -505,24 +498,21 @@ summary(zp_ind <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
                         fatal.origin + neighbor + distance, 
     data=nigeria, family = 'poisson'))
 
-# negative binomial, will probably have similar answer
-# try it
+# negative binomial, will probably have similar answer, try
 # non-independence based on origin
 # cluster at originating LGA
-# incorporate distance
 # lock down standard errors
 # theorize about destinations
 # nowcast why we see flows from place a to place b
 # understand relative attractiveness of destination
 # measure accumulated number of displaced people in LGA up to t minus one
-# get centroids for LGAs to calculate distances
 # use 2015-2018 data to predict, how accurately can it predict 2019?
 # look at fatalities at destination
 
-
-
 summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
-                      fatal.origin + neighbor + distance, data=nigeria, 
+                      fatal.origin + origin_pop*fatal.origin + 
+                      dest_pop*fatal.dest + neighbor + distance, data=nigeria, 
                       family = 'poisson'))
 
-
+# talking through how to do this
+# could simply use data from elsewhere
