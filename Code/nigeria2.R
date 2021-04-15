@@ -328,6 +328,7 @@ acled97$month <- substr(acled97$date,1,2)
 
 nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_orig", "year", "month"),
                  by.y=c("ADMIN2", "year", "month"))
+
 # Merge again on destination
 nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_name", "year", "month"),
                  by.y=c("ADMIN2", "year", "month"))
@@ -379,11 +380,6 @@ nb.df <- nb.df %>% rename(
   state_orig = `ADM1_EN.y`
 )
 
-nbweights <- nb2listw(nb, style="W", zero.policy=T)
-
-#OasisR::distance(spatobj = shape)
-summary(nigeria)
-
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
                                      "state_orig"))
 
@@ -395,7 +391,7 @@ dist <- melt(dist)[melt(upper.tri(dist))$value,]
 # create copy of dist matrix
 # swap orig and dest columns
 # append to original matrix
-# boom, you have a full matrix
+# you have a full matrix
 
 dist2 <- dist
 dist2 <- dist2[,c(2,1,3)]
@@ -406,8 +402,6 @@ nigeria <- merge(nigeria, distance, by.x=c("id_orig", "id_dest"),
 nigeria <- nigeria %>% rename(
   distance = value
 )
-
-summary(nigeria)
 
 nigeria <- nigeria %>%
   mutate(origin_pop = origin_pop / 1000,
@@ -493,4 +487,5 @@ summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
 # Out of sample prediction
 # Separate training months vs testing months
 # 2/3 training months 1/3 testing months
-# Try testing in stata
+
+
