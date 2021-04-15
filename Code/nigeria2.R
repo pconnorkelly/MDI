@@ -26,6 +26,7 @@ library(lwgeom)
 library(potential)
 library(SpatialPosition)
 library(MASS)
+library(forecast)
 
 
 conflict_prefer("select", "dplyr")
@@ -488,4 +489,21 @@ summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
 # Separate training months vs testing months
 # 2/3 training months 1/3 testing months
 
+nigeria$year <- as.factor(nigeria$year)
+#2015 2016 2017 2018 2019 
+#442  740  664  392  210 
 
+nigeria_train <- subset(nigeria, year!="2019")
+
+nigeria_test <- subset(nigeria, year=="2019")
+
+summary(ols_ind_train <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
+                        fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                        neighbor + distance, data=nigeria_train))
+
+summary(ols_ind_test <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
+                              fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                              neighbor + distance, data=nigeria_test))
+
+# Evaluate error
+sqrt(mean())
