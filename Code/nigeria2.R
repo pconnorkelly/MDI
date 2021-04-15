@@ -25,6 +25,7 @@ library(conflicted)
 library(lwgeom)
 library(potential)
 library(SpatialPosition)
+library(MASS)
 
 
 conflict_prefer("select", "dplyr")
@@ -448,7 +449,7 @@ nigeria <- nigeria %>%
 summary(ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
                     fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
                     neighbor + distance, data=nigeria))
-
+# take out interactions
 
 summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + 
                     fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
@@ -514,5 +515,9 @@ summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
                       dest_pop*fatal.dest + neighbor + distance, data=nigeria, 
                       family = 'poisson'))
 
-# talking through how to do this
-# could simply use data from elsewhere
+
+# Load to github, document
+# Out of sample prediction
+# Separate training months vs testing months
+# 2/3 training months 1/3 testing months
+# Try testing in stata
