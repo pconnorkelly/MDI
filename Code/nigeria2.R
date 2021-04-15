@@ -493,17 +493,25 @@ nigeria$year <- as.factor(nigeria$year)
 #2015 2016 2017 2018 2019 
 #442  740  664  392  210 
 
-nigeria_train <- subset(nigeria, year!="2019")
+# 2018 + 2019 = final 602 observations
 
-nigeria_test <- subset(nigeria, year=="2019")
+# Fit model 
+model.lm <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
+     fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+     neighbor + distance, data=nigeria[1:1846,])
 
-summary(ols_ind_train <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
-                        fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
-                        neighbor + distance, data=nigeria_train))
-
-summary(ols_ind_test <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
-                              fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
-                              neighbor + distance, data=nigeria_test))
+# Predict data for some new data 
+pred.dat <- predict(model.lm, newdata = nigeria[1847:2448,]) 
 
 # Evaluate error
-sqrt(mean())
+actual <- nigeria[1847:2448, "estimate_ind"]
+sqrt(mean((pred.dat - actual)^2))
+# 26802.93
+
+# Try with poisson models
+summary(zp_ind_train <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
+                        fatal.origin + neighbor + distance, 
+                      data=nigeria[1:1846,], family = 'poisson'))
+predicted <- predict(zp_ind_train, newdata = nigeria[1847:2448,])
+sqrt(mean((predicted - actual)^2))
+# 31993.87
