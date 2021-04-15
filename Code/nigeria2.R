@@ -37,7 +37,7 @@ setwd("C:/Users/Connor/Documents/GitHub/MDI")
 vars <- c("lga_name", "state_name", "estimate_hh_Ward", "estimate_Ind_Ward", 
           "lga_orig", "state_orig")
 
-# Load data
+# Load data from IOM
 ######
 round4 <- read_excel("Data/Nigeria/round4.xlsx") %>%
   rename(
@@ -261,7 +261,7 @@ round28 <- read_excel("Data/Nigeria/round28.xlsx") %>%
 
 ######  
   
-# Merge data
+# Merge previous data
 #####
 nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, 
                  round13, round14, round15, round16, round17, round18, round19, round20, 
@@ -292,7 +292,7 @@ nigeria <- nigeria %>%
   summarize(estimate_hh = sum(estimate_hh_Ward), estimate_ind = sum(estimate_Ind_Ward))
 #####
 
-# Population data
+# Add population data
 #####
 pop_adm2 <- read_csv("Data/Nigeria/nga_pop_adm2_2016.csv")
 pop_adm2 <- pop_adm2 %>% select(admin2Name_en, admin1Name_en, Population2016)
@@ -314,33 +314,6 @@ nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
 
 #####
 
-# ACLED
-#####
-# acled <- read_csv("Data/Nigeria/2018-02-27-2021-03-03-Nigeria.csv")
-# # Only data available to me for past three years
-# acled$date <- strptime(acled$event_date, "%d %B %Y")
-# acled$month <- format(as.Date(acled$date), "%m")
-# 
-# acled <- acled %>% select(event_type, admin2, admin1, month, year, fatalities)
-# acled$admin1 <- toupper(acled$admin1)
-# acled$admin2 <- toupper(acled$admin2)
-# 
-# acled$event_type <- as.factor(acled$event_type)
-# 
-# acled <- acled %>% group_by(event_type, admin2, admin1, month, year) %>%
-#   summarize(fatalities = sum(fatalities))
-# 
-# acled <- pivot_wider(acled, names_from = event_type, values_from = fatalities, 
-#                      values_fill = 0)
-# 
-# acled <- acled %>% rename(battle.fatal = `Battles`,
-#                           violence.fatal = `Violence against civilians`,
-#                           riots.fatal = `Riots`,
-#                           explosions.fatal = `Explosions/Remote violence`)
-# 
-# nigeria <- merge(x=nigeria, y=acled, by.x=c("lga_orig", "state_orig", "year", 
-#                 "month"), by.y=c("admin2", "admin1", "year", "month"))
-# nigeria[is.na(nigeria)] <- 0
 
 # ACLED data back to 1997
 acled97 <- read_csv("Data/Nigeria/acledFatalitiesMonthlyNigeriaAdmin2.xlsx - Sheet1.csv")
