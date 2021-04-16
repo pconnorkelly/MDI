@@ -1,7 +1,18 @@
-# Nigeria redux
+# Nigeria modeling
 # Author: Connor Kelly
-# Date: March 17, 2021
-# Going back to re-do IOM data aggregation to ensure origin and destination data
+# Date: April 16, 2021
+#########################################
+
+# Intro
+# In this code, I focus on IDP data in Nigeria from 2015 to 2019
+# The primary data source was IOM DTM, which had solid monthly data granular
+# to the Admin2 unit level, local government areas (LGA)
+# First, I merged monthly data from IOM DTM into a master dataset along with
+# population data from 2016 as a baseline
+# I then added data from ACLED on violent event counts and fatalities
+# To incorporate data on distance between LGAs, I added spatial data as well
+# I then attempted several models to predict IDP flows within Nigeria
+# This work should provide a solid foundation for future development
 
 # Packages
 library(readxl)
@@ -33,10 +44,14 @@ conflict_prefer("select", "dplyr")
 
 # Set directory
 setwd("C:/Users/Connor/Documents/GitHub/MDI")
+# You may have to change the directory for your purposes, but all of the data
+# in my working directory is also available in GitHub and Google Drive
 
 # Variables of interest
 vars <- c("lga_name", "state_name", "estimate_hh_Ward", "estimate_Ind_Ward", 
           "lga_orig", "state_orig")
+# IOM has a lot of superfluous variables. This will be useful to simplify
+
 
 # Load data from IOM
 ######
@@ -261,8 +276,7 @@ round28 <- read_excel("Data/Nigeria/round28.xlsx") %>%
   round28$date <- "09-16-2019"
 
 ######  
-  
-# Merge previous data
+# Merge IOM data into master dataset
 #####
 nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round11, round12, 
                  round13, round14, round15, round16, round17, round18, round19, round20, 
@@ -270,7 +284,7 @@ nigeria <- rbind(round4, round5, round6, round7, round8, round9, round10, round1
                  by=c("lga_name", "state_name", "lga_orig", "state_orig"))
   nigeria$estimate_hh_Ward <- as.numeric(nigeria$estimate_hh_Ward)
   nigeria$estimate_Ind_Ward <- as.numeric(nigeria$estimate_Ind_Ward)
-  # Rename certain place names for consistency
+  # Certain LGA names were inconsistent, rename them here
   nigeria$lga_name[nigeria$lga_name == "ARDO - KOLA"] <- "ARDO-KOLA"
   nigeria$lga_name[nigeria$lga_name == "ASKIRA / UBA"] <- "ASKIRA/UBA"
   nigeria$lga_name[nigeria$lga_name == "KWAYA / KUSAR"] <- "KWAYA/KUSAR"
@@ -302,31 +316,30 @@ pop_adm2$admin2Name_en <- as.factor(pop_adm2$admin2Name_en)
 pop_adm2$admin1Name_en <- toupper(pop_adm2$admin1Name_en)
 pop_adm2$admin1Name_en <- as.factor(pop_adm2$admin1Name_en)
 
-# Origin population
+# Generate population at the LGA of origin
 nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_orig", "state_orig"), 
                  by.y=c("admin2Name_en", "admin1Name_en"))
 
-# Destination population
+# Generate population at LGA destination
 nigeria <- merge(nigeria, pop_adm2, by.x=c("lga_name", "state_orig"), 
                  by.y=c("admin2Name_en", "admin1Name_en"))
-
+# Rename new population variables for clarity
 nigeria <- nigeria %>% rename(origin_pop = Population2016.x,
                               dest_pop = Population2016.y)
 
 #####
-
-
-# ACLED data back to 1997
+# Incorporate data from ACLED
+# We have ACLED data from Nigeria going back to 1997
 acled97 <- read_csv("Data/Nigeria/acledFatalitiesMonthlyNigeriaAdmin2.xlsx - Sheet1.csv")
 
 acled97 <- acled97 %>% 
   replace(is.na(.),0)
 acled97$ADMIN2 <- toupper(acled97$ADMIN2)
-
+# Make dataset longer for easier incorporation with master dataset
 acled97 <- pivot_longer(acled97, !ADMIN2, names_to = "date", values_to="fatalities")
 acled97$year <- substr(acled97$date,4,7)
 acled97$month <- substr(acled97$date,1,2)  
-
+# Merge
 nigeria <- merge(x=nigeria, y=acled97, by.x=c("lga_orig", "year", "month"),
                  by.y=c("ADMIN2", "year", "month"))
 
@@ -346,32 +359,25 @@ nigeria <- nigeria %>%
 # Spatial data
 #####
 shape <- shapefile("Data/nga_adm_osgof_20190417/nga_admbnda_adm2_osgof_20190417.shp")
+# Make format consistent
 shape$ADM2_EN <- toupper(shape$ADM2_EN)
 shape$ADM1_EN <- toupper(shape$ADM1_EN)
 
+# Save ADM2 codes to ensure proper merging later on 
 adm2_codes <- as.data.frame(shape@data)
 adm2_codes <- adm2_codes %>% dplyr::select(ADM2_EN, ADM2_PCODE, ADM1_EN)
-
 row.names(shape) = shape$ADM2_PCODE
 
+# Make a binary indicator of whether two LGAs share a border
 nb <- poly2nb(shape)
-nb
-
 plot(shape, col='gray', border='blue')
-
 xy <- coordinates(shape)
-
 plot(nb, xy, col='red', add=T)
-
 nb.df <- neighborsDataFrame(nb)
-nb.df
-
 nb.df$neighbor <- 1
 nb.df <- as.data.frame(complete(nb.df, id, id_neigh, fill=list(neighbor=0)))
-
 nb.df <- merge(nb.df, adm2_codes, by.x=c("id"), by.y=c("ADM2_PCODE"))
 nb.df <- merge(nb.df, adm2_codes, by.x=c("id_neigh"), by.y=c("ADM2_PCODE"))
-
 nb.df <- nb.df %>% rename(
   id_dest = `id`,
   id_orig = `id_neigh`,
@@ -384,26 +390,24 @@ nb.df <- nb.df %>% rename(
 nigeria <- merge(nigeria, nb.df, by=c("lga_name", "state_name", "lga_orig",
                                      "state_orig"))
 
+# Create a distance matrix for each LGA combination
 sf <- st_as_sf(shape)
-
 dist <- CreateDistMatrix(sf, sf)
 dist <- melt(dist)[melt(upper.tri(dist))$value,]
-
 # create copy of dist matrix
 # swap orig and dest columns
 # append to original matrix
 # you have a full matrix
-
 dist2 <- dist
 dist2 <- dist2[,c(2,1,3)]
 distance <- rbind(dist, dist2)
-
 nigeria <- merge(nigeria, distance, by.x=c("id_orig", "id_dest"), 
                  by.y=c("Var1", "Var2"))
 nigeria <- nigeria %>% rename(
   distance = value
 )
 
+# Set values for population to 1000s and distance to kilometers
 nigeria <- nigeria %>%
   mutate(origin_pop = origin_pop / 1000,
          dest_pop = dest_pop / 1000,
@@ -412,15 +416,14 @@ nigeria <- nigeria %>%
 #####
 
 # Models
-
+#####
 # OLS
 summary(ols_ind <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
-                    fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                    fatal.dest + origin_pop + dest_pop +
                     neighbor + distance, data=nigeria))
-# take out interactions
 
 summary(ols_hh <- lm(estimate_hh ~ origin_pop + dest_pop + fatal.origin + 
-                    fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+                    fatal.dest + origin_pop + dest_pop +
                     neighbor + distance, data=nigeria))
 
 
@@ -483,11 +486,9 @@ summary(zp_ind2 <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
                       dest_pop*fatal.dest + neighbor + distance, data=nigeria, 
                       family = 'poisson'))
 
-
-# Load to github, document
 # Out of sample prediction
 # Separate training months vs testing months
-# 2/3 training months 1/3 testing months
+# Using training months, see how far prediction is from reality
 
 nigeria$year <- as.factor(nigeria$year)
 #2015 2016 2017 2018 2019 
@@ -497,7 +498,7 @@ nigeria$year <- as.factor(nigeria$year)
 
 # Fit model 
 model.lm <- lm(estimate_ind ~ origin_pop + dest_pop + fatal.origin + 
-     fatal.dest + origin_pop*fatal.origin + dest_pop*fatal.dest +
+     fatal.dest + origin_pop + dest_pop +
      neighbor + distance, data=nigeria[1:1846,])
 
 # Predict data for some new data 
@@ -506,7 +507,13 @@ pred.dat <- predict(model.lm, newdata = nigeria[1847:2448,])
 # Evaluate error
 actual <- nigeria[1847:2448, "estimate_ind"]
 sqrt(mean((pred.dat - actual)^2))
-# 26802.93
+# 10979.42
+
+summary(nigeria$estimate_ind)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0       0       0   12362    6196  439390 
+# for reference, extreme skew in data with mean higher than 3rd quartile
+
 
 # Try with poisson models
 summary(zp_ind_train <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
@@ -515,3 +522,7 @@ summary(zp_ind_train <- glm(estimate_ind ~ origin_pop + dest_pop + fatal.dest +
 predicted <- predict(zp_ind_train, newdata = nigeria[1847:2448,])
 sqrt(mean((predicted - actual)^2))
 # 31993.87
+
+################
+# Conclusion and next steps:
+# 
