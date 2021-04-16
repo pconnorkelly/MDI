@@ -543,6 +543,8 @@ ggplotly(g)
 
 # I initially focused on Nigeria because of the wealth of available data
 # Now, I believe that the scale of this data could in fact be holding it back
+# As it stands now, the model is off on average by about 10,000 individuals
+# at best. 
 
 
 
