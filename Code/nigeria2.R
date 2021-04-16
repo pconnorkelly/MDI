@@ -525,4 +525,25 @@ sqrt(mean((predicted - actual)^2))
 
 ################
 # Conclusion and next steps:
-# 
+
+# We see that a massive right skew in these data, massive humanitarian crises
+# lead to huge outliers. This makes it difficult to accurately predict both
+# "small" scale displacement events (not to imply that hundreds if not 
+# thousands of individuals being displaced is "small") as well as the massive
+# crises. 
+
+# We could try to focus on one type of event or the other
+# We played with zero inflated models, but perhaps simply removing these 
+# observations entirely would allow for better prediction of such events
+
+# We could build two separate models: one small one large
+# See the plot below to get a sense of how this could be approached
+ggplotly(g)
+# A potential cutoff could be about 10,000 individuals
+
+# I initially focused on Nigeria because of the wealth of available data
+# Now, I believe that the scale of this data could in fact be holding it back
+
+
+
+
